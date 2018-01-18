@@ -238,27 +238,28 @@ int playCard(int handPos, int choice1, int choice2, int choice3, struct gameStat
     {
       return -1;
     }
-
+	
   //check if player has enough actions
   if ( state->numActions < 1 )
     {
       return -1;
     }
-
+	
   //get card played
   card = handCard(handPos, state);
-
+	
   //check if selected card is an action
   if ( card < adventurer || card > treasure_map )
     {
       return -1;
     }
+	
   //play card
   if ( cardEffect(card, choice1, choice2, choice3, state, handPos, &coin_bonus) < 0 )
-    printf("card effect %d.\n", cardEffect);
     {
       return -1;
-    } 
+    }
+	
   //reduce number of actions
   state->numActions--;
 
@@ -642,55 +643,43 @@ int getCost(int cardNumber)
   return -1;
 }
 
-// moved case adventurer to its own function assignment-2
-int playAdventurer( struct gameState *state) {
-	// pulled these out
-  int drawntreasure = 0;
-  int currentPlayer = whoseTurn(state);
-  int cardDrawn;
-  int temphand[MAX_HAND];
-  int z = 0;
+int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure, int cardDrawn, int temphand[], int z){
 
   while(drawntreasure<2){
     if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
-     	shuffle(currentPlayer, state);
-		}
-		drawCard(currentPlayer, state);
-		cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-		if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
-	  	drawntreasure++;
-			else{
-	  		temphand[z]=cardDrawn;
-	  		state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
-	  		z++;
-			}
+      shuffle(currentPlayer, state);
     }
-    while(z-1>=0){
-			state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
-			z=z-1;
+    drawCard(currentPlayer, state);
+    cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
+    if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+      drawntreasure++;
+    else{
+      temphand[z]=cardDrawn;
+      state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+      z++;
     }
+  }
+  while(z-1>=0){
+    state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
+    z=z-1;
+  }
   return 0;
 }
 
-// moved case smithy to his own function assignment-2
-int playSmithy(struct gameState *state, int handPos) {
-	int i;
-  int currentPlayer = whoseTurn(state);
-
+int playSmithy(struct gameState *state, int currentPlayer, int handPos){
+  int i;
+  //+3 Cards
   for (i = 0; i < 3; i++) {
-	  drawCard(currentPlayer, state);
-	}	
+    drawCard(currentPlayer, state);
+  }
   //discard card from hand
   discardCard(handPos, currentPlayer, state, 0);
   return 0;
 }
 
-// 3 assignment-2
-int playSeaHag(struct gameState *state) {
 
+int playSeaHag(struct gameState *state, int currentPlayer){
   int i;
-  int currentPlayer = whoseTurn(state);
-  
   for (i = 0; i < state->numPlayers; i++){
     if (i != currentPlayer){
       state->discard[i][state->discardCount[i]] = state->deck[i][state->deckCount[i]--];          
@@ -699,28 +688,24 @@ int playSeaHag(struct gameState *state) {
       state->deck[i][state->deckCount[i]--] = curse;//Top card now a curse
     }
   }
-  return 0;  
+return 0;
 }
 
-// 4 assignment-2
-int playVillage(struct gameState *state, int handPos) {
 
-  int currentPlayer = whoseTurn(state);
+int playVillage(struct gameState *state, int currentPlayer, int handPos) {
   //+1 Card
   drawCard(currentPlayer, state);
-    
+      
   //+2 Actions
   state->numActions = state->numActions + 2;
       
   //discard played card from hand
-  discardCard(handPos, currentPlayer, state, 0);
-  return 0;  
-}
-// 5 assignment-2
-int playCouncilRoom(struct gameState *state, int handPos){
-  int i;
-  int currentPlayer = whoseTurn(state);
+  discardCard(handPos, currentPlayer, state, 1);
+  return 0;
+}   
 
+int playCouncilRoom(struct gameState *state, int currentPlayer, int handPos){
+  int i;
   //+4 Cards
   for (i = 0; i < 4; i++) {
     drawCard(currentPlayer, state);
@@ -735,11 +720,11 @@ int playCouncilRoom(struct gameState *state, int handPos){
         drawCard(i, state);
       }
     }
+      
     //put played card in played card pile
     discardCard(handPos, currentPlayer, state, 0);
-      
-    return 0;
-      
+  
+  return 0;
 }
 
 int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
@@ -757,7 +742,6 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   int drawntreasure=0;
   int cardDrawn;
   int z = 0;// this is the counter for the temp hand
-
   if (nextPlayer > (state->numPlayers - 1)){
     nextPlayer = 0;
   }
@@ -767,11 +751,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
-    	playAdventurer(state);
-			
+      playAdventurer(state, currentPlayer, drawntreasure, cardDrawn, temphand, z);
+			break;
     case council_room:
-      playCouncilRoom(state, handPos);
-     
+      playCouncilRoom(state, currentPlayer, handPos);
+			break;
     case feast:
       //gain card with cost up to 5
       //Backup hand
@@ -890,12 +874,13 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case smithy:
-      //+3 Cards
-    	playSmithy(state, handPos);
+      playSmithy(state, currentPlayer, handPos);
+      break;
 
     case village:
-      playVillage(state, handPos);
-		
+      playVillage(state, currentPlayer, handPos);
+      break;
+
     case baron:
       state->numBuys++;//Increase buys by 1!
       if (choice1 > 0){//Boolean true or going to discard an estate
@@ -1226,7 +1211,8 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
       return 0;
 		
     case sea_hag:
-      playSeaHag(state);
+      playSeaHag(state, currentPlayer);
+      break;
 
     case treasure_map:
       //search hand for another treasure_map

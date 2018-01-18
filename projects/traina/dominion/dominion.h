@@ -93,13 +93,6 @@ int shuffle(int player, struct gameState *state);
 /* Assumes all cards are now in deck array (or hand/played):  discard is
  empty */
 
-// assignment-2 refactoring
-int playAdventurer(struct gameState *state);
-int playSmithy(struct gameState *state, int handPos);
-int playSeaHag(struct gameState *state);
-int playVillage(struct gameState *state, int handPos);
-int playCouncilRoom(struct gameState *state, int handPos);
-
 int playCard(int handPos, int choice1, int choice2, int choice3,
 	     struct gameState *state);
 /* Play card with index handPos from current player's hand */
@@ -134,5 +127,11 @@ int scoreFor(int player, struct gameState *state);
 int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 /* Set array position of each player who won (remember ties!) to
    1, others to 0 */
+
+int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure, int cardDrawn, int temphand[], int z);
+int playSmithy(struct gameState *state, int currentPlayer, int handPos);
+int playSeaHag(struct gameState *state, int currentPlayer);
+int playVillage(struct gameState *state, int currentPlayer, int handPos);
+int playCouncilRoom(struct gameState *state, int currentPlayer, int handPos);
 
 #endif
