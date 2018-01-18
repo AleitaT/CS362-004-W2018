@@ -659,7 +659,8 @@ int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure
       z++;
     }
   }
-  while(z-1>=0){
+  // changed `>=` to `>`
+  while(z-1>0){
     state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
     z=z-1;
   }
@@ -668,8 +669,8 @@ int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure
 
 int playSmithy(struct gameState *state, int currentPlayer, int handPos){
   int i;
-  //+3 Cards
-  for (i = 0; i < 3; i++) {
+  //+3 Cards NOTE: changed 3 to 2
+  for (i = 0; i < 2; i++) {
     drawCard(currentPlayer, state);
   }
   //discard card from hand
@@ -680,7 +681,8 @@ int playSmithy(struct gameState *state, int currentPlayer, int handPos){
 
 int playSeaHag(struct gameState *state, int currentPlayer){
   int i;
-  for (i = 0; i < state->numPlayers; i++){
+  // changed 0 to 1 
+  for (i = 1; i < state->numPlayers; i++){
     if (i != currentPlayer){
       state->discard[i][state->discardCount[i]] = state->deck[i][state->deckCount[i]--];          
       state->deckCount[i]--;
@@ -753,9 +755,11 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     case adventurer:
       playAdventurer(state, currentPlayer, drawntreasure, cardDrawn, temphand, z);
 			break;
+
     case council_room:
       playCouncilRoom(state, currentPlayer, handPos);
 			break;
+
     case feast:
       //gain card with cost up to 5
       //Backup hand
