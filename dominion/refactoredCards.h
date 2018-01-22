@@ -7,18 +7,17 @@
 ****************************************************/
 #include "dominion_helpers.h"
 
-
 #ifndef CS362_004_W2018_REFACTOREDCARDS_H
 #define CS362_004_W2018_REFACTOREDCARDS_H
 
-void refactoredSteward();
+void refactoredSteward(int choice1, int choice2, int choice3, int currentPlayer, int handPos, struct gameState* state);
 
-void refactoredSmithy();
+void refactoredSmithy(int currentPlayer, struct gameState* state, int handPos);
 
-void refactoredAdventurer();
+void refactoredAdventurer(int drawntreasure, int currentPlayer, struct gameState* state);
 
-void refactoredAmbassador();
+int refactoredAmbassador(int handPos, int choice1, int choice2, int choice3, int currentPlayer, struct gameState* state);
 
-void refactoredVillage();
+void refactoredVillage(int currentPlayer, int handPos, struct gameState* state);
 
 #endif //CS362_004_W2018_REFACTOREDCARDS_H
