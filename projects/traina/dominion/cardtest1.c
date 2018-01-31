@@ -1,5 +1,5 @@
 /************************************************
-* Unit Testing for refactored Adventurer
+* Unit Testing for  Adventurer
 *************************************************/
 
 #include "assert.h" 
@@ -27,7 +27,7 @@ int main () {
 
    initializeGame(2, kingdomCards, 100, &g);
 
-   printf("\nCARD TEST 2: ADVENTURER\n");
+   printf("\n **** CARDTEST1: ADVENTURER **** \n");
 
 
    /**************************************************************

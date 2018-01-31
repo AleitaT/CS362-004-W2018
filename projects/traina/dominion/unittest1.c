@@ -8,8 +8,10 @@
 #include "dominion.h"
 #include "rngs.h"
 #include <time.h>
+#include "dominion_helpers.h"
 
 int main(int argc, char** argv){
+
   int a = getCost(0);
   assert(a == 0);
   int b = getCost(adventurer);
