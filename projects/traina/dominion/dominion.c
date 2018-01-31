@@ -643,7 +643,9 @@ int getCost(int cardNumber)
   return -1;
 }
 
-int playAdventurer(struct gameState *state, int currentPlayer, int drawntreasure, int temphand[], int z){
+int playAdventurer(struct gameState *state, int currentPlayer, int temphand[]){
+  int drawntreasure = 0;
+  int z = 0;
   int cardDrawn;
   cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];
   while(drawntreasure<2){
@@ -730,8 +732,7 @@ int playCouncilRoom(struct gameState *state, int currentPlayer, int handPos){
   return 0;
 }
 
-int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus)
-{
+int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState *state, int handPos, int *bonus) {
   int i;
   int j;
   int k;
@@ -742,9 +743,9 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
   int tributeRevealedCards[2] = {-1, -1};
   int temphand[MAX_HAND];// moved above the if statement
-  int drawntreasure=0;
+  //int drawntreasure=0;
   //int cardDrawn;
-  int z = 0;// this is the counter for the temp hand
+  //int z = 0;// this is the counter for the temp hand
   if (nextPlayer > (state->numPlayers - 1)){
     nextPlayer = 0;
   }
@@ -754,16 +755,13 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
   switch( card ) 
     {
     case adventurer:
-      playAdventurer(state, currentPlayer, drawntreasure, temphand, z);
+      playAdventurer(state, currentPlayer, temphand);
 			break;
-
     case council_room:
       playCouncilRoom(state, currentPlayer, handPos);
 			break;
-
     case feast:
-      //gain card with cost up to 5
-      //Backup hand
+      //gain card with cost up to 5 + Backup hand
       for (i = 0; i <= state->handCount[currentPlayer]; i++){
 	temphand[i] = state->hand[currentPlayer][i];//Backup card
 	state->hand[currentPlayer][i] = -1;//Set to nothing
