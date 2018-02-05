@@ -4,7 +4,139 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-#include "refactoredCards.h"
+#include <time.h>
+#include <error.h>
+
+void refactoredSteward(int choice1, int choice2, int choice3, int currentPlayer, int handPos, struct gameState* state){
+
+  if (choice1 = 1)
+  {
+    //+2 cards
+    drawCard(currentPlayer, state);
+    drawCard(currentPlayer, state);
+  }
+  else if (choice1 = 2)
+  {
+    //+2 coins
+    state->coins = state->coins + 2;
+  }
+  else
+  {
+    //trash 2 cards in hand
+    discardCard(choice2, currentPlayer, state, 1);
+    discardCard(choice3, currentPlayer, state, 1);
+  }
+
+  //discard card from hand
+  discardCard(handPos, currentPlayer, state, 0);
+
+
+};
+
+void refactoredSmithy(int currentPlayer,struct gameState* state, int handPos){
+
+  int i = 0;
+  //+3 Cards
+  for (i = 0; i <= 3; i++) {
+    drawCard(currentPlayer, state);
+  }
+
+  //discard card from hand
+  discardCard(handPos, currentPlayer, state, 1);
+
+
+};
+
+void refactoredAdventurer(int drawntreasure, int currentPlayer, struct gameState* state){
+
+  int cardDrawn;
+  int temphand[MAX_HAND];
+  int z = 0;
+
+  while(drawntreasure < 2){
+    if (state->deckCount[currentPlayer] < 1){//if the deck is empty we need to shuffle discard and add to deck
+      shuffle(currentPlayer, state);
+    }
+    drawCard(currentPlayer, state);
+    cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]];//top card of hand is most recently drawn card.
+    if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+      drawntreasure++;
+    else{
+      temphand[z]=cardDrawn;
+      state->handCount[currentPlayer]--; //this should just remove the top card (the most recently drawn one).
+      z++;
+    }
+  }
+  while(z-1>0){
+    state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
+    z=z-1;
+  }
+};
+
+int refactoredAmbassador(int handPos, int choice1, int choice2, int choice3, int currentPlayer, struct gameState* state){
+
+  int j = 0;        //used to check if player has enough cards to discard
+  int i = 0;
+
+  if (choice2 > 2 || choice2 < 0) {
+    return -1;
+  }
+
+  if (choice1 = handPos) {
+    return -1;
+  }
+
+  for (i = 0; i < state->handCount[currentPlayer]; i++) {
+    if (i != handPos && i == state->hand[currentPlayer][choice1] && i == choice1) {
+      j++;
+    }
+  }
+  if (j < choice2) {
+    return -1;
+  }
+
+  if (DEBUG)
+    printf("Player %d reveals card number: %d\n", currentPlayer, state->hand[currentPlayer][choice1]);
+
+  //increase supply count for choosen card by amount being discarded
+  state->supplyCount[state->hand[currentPlayer][choice1]] += choice2;
+
+  //each other player gains a copy of revealed card
+  for (i = 0; i < state->numPlayers; i++) {
+    if (i != currentPlayer) {
+      gainCard(state->hand[currentPlayer][choice1], state, 0, i);
+    }
+  }
+
+  //discard played card from hand
+  discardCard(handPos, currentPlayer, state, 0);
+
+  //trash copies of cards returned to supply
+  for (j = 0; j < choice2; j++) {
+    for (i = 0; i < state->handCount[currentPlayer]; i++) {
+      if (state->hand[currentPlayer][i] == state->hand[currentPlayer][choice1]) {
+        discardCard(i, currentPlayer, state, 1);
+        break;
+      }
+    }
+  }
+
+  return 0;
+};
+
+void refactoredVillage(int currentPlayer, int handPos, struct gameState* state){
+
+  //+1 Card
+  drawCard(currentPlayer, state);
+
+  //+2 Actions
+  state->numActions = state->numActions + 2;
+
+  //discard played card from hand
+  discardCard(handPos, currentPlayer, state, 0);
+};
+
+
 int compare(const void* a, const void* b) {
   if (*(int*)a > *(int*)b)
     return 1;
@@ -327,7 +459,7 @@ int fullDeckCount(int player, int card, struct gameState *state) {
 
   for (i = 0; i < state->deckCount[player]; i++)
     {
-      if (state->deck[player][i] == card) count++;
+        if (state->deck[player][i] == card)  count++;
     }
 
   for (i = 0; i < state->handCount[player]; i++)
@@ -1190,6 +1322,121 @@ int updateCoins(int player, struct gameState *state, int bonus)
   return 0;
 }
 
+int containsCard(int k, int kingdom[], int size){
 
+    int j;
+    for (j = 0; j < size; ++j) {
+        if(kingdom[j] == k){
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void randomizeGameState(struct gameState* game) {           // Simulate mid game state
+
+    int i, j, k;
+    int randomNumberToAdd = -1;
+    int randomNumber = 0;
+
+    for (i = 0; i < game->numPlayers; ++i) {
+
+        game->deckCount[i] = 0;
+        game->handCount[i] = 0;
+
+        randomNumberToAdd = rand() % (20 + 1 - 1) + 1;
+
+        for (j = 0; j < randomNumberToAdd; ++j) {       // Add random number of cards to player deck
+
+            randomNumber = rand() % (26 + 1 - 0);
+
+            while (game->supplyCount[randomNumber] < 1) {
+
+                randomNumber = rand() % (26 + 1 - 0);
+            }
+            game->deckCount[i]++;
+            game->deck[i][j] = randomNumber;
+
+            game->supplyCount[randomNumber]--;
+        }
+
+        randomNumberToAdd = rand() % (15 + 1 - 5) + 5;
+
+        for (k = 0; k < randomNumberToAdd; ++k) {      // Add random number of cards to player hand
+
+            randomNumber = rand() % (26 + 1 - 0);
+
+            while (game->supplyCount[randomNumber] < 1) {
+
+                randomNumber = rand() % (26 + 1 - 0);
+            }
+
+            game->handCount[i]++;
+            game->hand[i][k] = randomNumber;
+
+            game->supplyCount[randomNumber]--;
+        }
+
+        randomNumberToAdd = rand() % (10 + 1 - 0);
+
+        for (j = 0; j < randomNumberToAdd; ++j) {
+
+            randomNumber = rand() % (26 + 1 - 0);
+
+            while (game->supplyCount[randomNumber] < 1) {
+
+                randomNumber = rand() % (26 + 1 - 0);
+            }
+
+            game->discardCount[i]++;
+            game->discard[i][j] = randomNumber;
+
+            game->supplyCount[randomNumber]--;
+        }
+    }
+}
+
+void randomNewGame(struct gameState* game){
+
+    int numberOfPlayers = rand() % (4 + 1 - 2) + 2;
+    int kingdom[10] = {-1,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+    int i;
+    int randomNumber;
+    int seed = time(0);
+
+    for (i = 1; i < 10 ; ++i) {
+        randomNumber = rand() % (26 + 1 - 0);
+
+        while(containsCard(randomNumber, kingdom, 10)){
+            randomNumber = rand() % (26 + 1 - 0);
+        }
+
+        kingdom[i] = randomNumber;
+    }
+
+    int check = initializeGame(numberOfPlayers, kingdom, seed, game);
+
+    if(check == -1){
+
+        printf("Error in initializing game\n");
+        exit(200);
+    }
+
+}
+
+int numOfTreasureHand(){}
+
+int cardPos(int player, int card, struct gameState* game){
+
+    int i;
+
+    for (i = 0; i < game->handCount[player]; ++i) {
+        if(game->hand[player][i] == card){
+            return i;
+        }
+    }
+    return -1;
+}
 //end of dominion.c
 

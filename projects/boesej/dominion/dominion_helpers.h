@@ -11,5 +11,10 @@ int gainCard(int supplyPos, struct gameState *state, int toFlag, int player);
 int getCost(int cardNumber);
 int cardEffect(int card, int choice1, int choice2, int choice3, 
 	       struct gameState *state, int handPos, int *bonus);
+int containsCard(int k, int kingdom[], int size);
+void randomizeGameState(struct gameState* game);
+void randomNewGame(struct gameState* game);
+int cardPos(int player,int card, struct gameState* game);
+
 
 #endif
