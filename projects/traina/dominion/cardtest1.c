@@ -14,7 +14,19 @@ int main () {
 
    printf("\n **** CARDTEST1: ADVENTURER **** \n");
 
-   int kingdomCards[10] = {adventurer, embargo, village, minion, mine, cutpurse, remodel, tribute, smithy, council_room};
+   int kingdomCards[10] = {
+      adventurer, 
+      embargo, 
+      village, 
+      minion, 
+      mine, 
+      cutpurse, 
+      remodel, 
+      tribute, 
+      smithy, 
+      council_room
+   };
+   
    int i = 0;
    int handPos = 0;
    int choice1 = 0;

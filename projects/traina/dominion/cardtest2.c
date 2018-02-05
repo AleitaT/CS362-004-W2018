@@ -37,144 +37,151 @@ int main () {
    };
 
    struct gameState g, tester;
-
    initializeGame(2, kingdomCards, 100, &g);
-
    printf("\n **** CARDTEST2: COUNCIL ROOM **** \n\n");
-
-   	/*******************************************************
+   memcpy(&tester, &g, sizeof(struct gameState));
+   cardEffect(council_room, choice1, choice2, choice3, &tester, handPos, &bonus);
+   /*******************************************************
 	* Other players deck should be reduced by oe
 	********************************************************/
-   if (tester.deckCount[1] != g.deckCount[1] - 1) {
+   int competitorDeckCountPlay = g.deckCount[1];
+   int competitorDeckCountShould = g.deckCount[1] - 1;
+   if (competitorDeckCountPlay != competitorDeckCountShould) {
       pass = 0;
-      printf("\tFailed: Player 2's deckcount has incorrect count. Expected %d, got %d\n", g.deckCount[1] - 1, tester.deckCount[1]);
-   }
-   else {
-      printf("\tSuccess: Player 2's deckcount has -1 after player 1 played council room\n");
+      printf("\tFailed: Player 2's deckcount expected %d, got %d after playing council room card.\n", competitorDeckCountShould, competitorDeckCountPlay);
+   } else {
+      printf("\tSuccess: Player 2's deckcount has -1 after player 1 played council room card.\n");
    }
 
 	/*******************************************************
 	* Expect other palyers score to not change
 	********************************************************/
-   if (scoreFor(1, &tester) != scoreFor(1, &g)) {
+   int competitorScorePlay = scoreFor(1, &tester);
+   int competitorSscoreShould = scoreFor(1, &g);
+   if (competitorScorePlay != competitorSscoreShould) {
       pass = 0;
-      printf("\tFailed: Score for player 2 changed when player 1 played council room. Expected %d, got %d\n", scoreFor(1, &g), scoreFor(1, &tester));
-   }
-   else {
-      printf("\tSuccess: Player 2's score unchanged after player 1 played council room\n");
+      printf("\tFailed: Score for player 2 expected %d, got %d for players twos score.\n", competitorSscoreShould, competitorScorePlay);
+   } else {
+      printf("\tSuccess: Player 2's score unchanged after player 1 played council room room.\n");
    }
 
 	/*******************************************************
 	* Expect handcount to go up by 4 for player
 	********************************************************/
-   memcpy(&tester, &g, sizeof(struct gameState));
-
-   cardEffect(council_room, choice1, choice2, choice3, &tester, handPos, &bonus);
-
-   if (tester.handCount[0] != g.handCount[0] + drawn - discard) {
+   int handCountPlay = tester.handCount[0];
+   int handCountShould =  g.handCount[0] + drawn - discard;
+   if ( handCountPlay != handCountShould) {
       pass = 0;
-      printf("\tFailed: Hand count after playing council room was not correct. Expected %d, got %d\n", g.handCount[0] + drawn - discard, tester.handCount[0]);
-   }
-   else {
+      printf("\tFailed: Hand count after playing council expected %d, got %d\n", handCountShould, handCountPlay);
+   } else {
       printf("\tSuccess: Correct hand count after playing council room (+3)\n");
    }
    
-   	/*******************************************************
+   /*******************************************************
 	* Expect number of buys to be incremented by ome
 	********************************************************/
-   if (tester.numBuys != g.numBuys +1) {
+   int numBuysPlay = tester.numBuys;
+   int numBuysShould = g.numBuys +1;
+   if ( numBuysPlay != numBuysShould ) {
       pass = 0;
-      printf("\tFailed: Number of buys is incorrect after playing council room. Expected %d, got %d\n", g.numBuys + 1, tester.numBuys);
-   }
-   else {
+      printf("\tFailed: Number of buys is incorrect expected %d, got %d\n", numBuysShould, numBuysPlay);
+   } else {
       printf("\tSuccess: Correct number of buys after playing council room (+1)\n");
    }
 
-
-   	/*******************************************************
+   /*******************************************************
 	* expect kingdom card piles to be the same
 	********************************************************/
    for (i = 0; i < 10; i++) {
-
-      if (tester.supplyCount[kingdomCards[i]] != g.supplyCount[kingdomCards[i]]) {
-	 pass = 0;
-	 printf("\tFAIL: Kingdom card pile #%d did not contain the same number of cards\n", i);
-      }
-      else {
-	 printf("\tSuccess: Kingdom card pile #%d contained the same number of cards as before\n", i);
+      int kingdomCardsPlay = tester.supplyCount[kingdomCards[i]];
+      int kingdomCardsShould = g.supplyCount[kingdomCards[i]];
+      if ( kingdomCardsPlay != kingdomCardsShould ) {
+         pass = 0;
+         printf("\tFAIL: Kingdom card pile #%d did not contain the same number of cards\n", i);
+      } else {
+         printf("\tSuccess: Kingdom card pile #%d contained the same number of cards as before\n", i);
       }
 
    }
 	/*******************************************************
-	* Expect deckcunt to go down by 3 
+	* Expect deckcount to go down by 3 
 	********************************************************/
-   if (tester.deckCount[0] != g.deckCount[0] - drawn) {
+   int deckCountPlay = tester.deckCount[0];
+   int deckCountShould = g.deckCount[0] - drawn;
+   if (deckCountPlay != deckCountShould) {
       pass = 0;
-      printf("\tFailed: Deck count after playing council room was not correct. Expected %d, got %d\n", g.deckCount[0] - drawn,  tester.deckCount[0]);
-   }
-   else {
+      printf("\tFailed: Deck count after playing council room expected %d, got %d\n", deckCountShould,  deckCountPlay);
+   } else {
       printf("\tSuccess: Correct deck count after playing council room (-3)\n");
    }
 
-
-   //Test if the score changed - it should be the same as before
-   if (scoreFor(0, &tester) != scoreFor(0, &g)) {
+   /*******************************************************
+   * score should be the same 
+   ********************************************************/
+   int scoreShould =  scoreFor(0, &g);
+   int scorePlay = scoreFor(0, &tester);
+   if (scoreShould != scorePlay) {
       pass = 0;
-      printf("\tFailed: Score after playing council room was not correct. Expected %d, got %d\n", scoreFor(0, &g), scoreFor(0, & tester));
-   }
-   else {
+      printf("\tFailed: Score after playing council room expected %d, got %d\n", scoreShould, scorePlay);
+   } else {
       printf("\tSuccess: Correct score after playing council room (no change)\n");
    }
 
    	/*******************************************************
 	* Expect other player hand size to increase by one
 	********************************************************/
-   if (tester.handCount[1] != g.handCount[1] + 1) {
+   int competitorHandPlay = tester.handCount[1];
+   int competitorHandShould = g.handCount[1] + 1;
+   if ( competitorHandPlay != competitorHandShould ) {
       pass = 0;
-      printf("\tFailed: Player 2's handcount has incorrect count. Expected %d, got %d\n", g.handCount[1] + 1, tester.handCount[1]);
-   }
-   else {
+      printf("\tFailed: Player 2's handcount expected %d, got %d\n", competitorHandShould, competitorHandPlay);
+   } else {
       printf("\tSuccess: Player 2's handcount has +1 after player 1 played council room\n");
    }
 
 	/*******************************************************
 	* Expect victory card piles to be the same
 	********************************************************/
-   if (tester.supplyCount[estate] != g.supplyCount[estate]) {
+   int estateHandPlay = tester.supplyCount[estate];
+   int estateHandShould = g.supplyCount[estate];
+   if ( estateHandPlay != estateHandShould) {
       pass = 0;
-      printf("\tFailed: Number of estate cards differed. Expected %d, got %d\n", g.supplyCount[estate], tester.supplyCount[estate]);
-   }
-   else {
+      printf("\tFailed: Number of estate cards expected %d, got %d\n", estateHandPlay, estateHandShould);
+   } else {
       printf("\tSuccess: Number of estate cards the same after playing council room\n");
    }
-
-   if (tester.supplyCount[duchy] != g.supplyCount[duchy]) {
+   /*******************************************************
+   * Expect duchy card piles to be the same
+   ********************************************************/
+   int duchyPlay = tester.supplyCount[duchy] ;
+   int duchyShould = g.supplyCount[duchy]; 
+   if (duchyPlay != duchyShould ) {
       pass = 0;
-      printf("\tFailed: Number of duchy cards differed. Expected %d, got %d\n", g.supplyCount[duchy], tester.supplyCount[duchy]);
-   }
-   else {
+      printf("\tFailed: Expected %d, got %d duchy cards\n", duchyPlay, duchyShould);
+   } else {
       printf("\tSuccess: Number of duchy cards the same after playing council room\n");
    }
-
-   if (tester.supplyCount[province] != g.supplyCount[province]) {
+   /*******************************************************
+   * Expect privince card piles to be the same
+   ********************************************************/
+   int provincePlay = tester.supplyCount[province];
+   int provinceShould = g.supplyCount[province];
+   if ( provincePlay != provinceShould ) {
       pass = 0;
-      printf("\tFailed: Number of province cards differed. Expected %d, got %d\n", g.supplyCount[province],  tester.supplyCount[province]);
-   }
-   else {
+      printf("\tFailed: Expected %d, got %d province cards\n", provincePlay,  provinceShould);
+   } else {
       printf("\tSuccess: Number of province cards the same after playing council room\n");
    }
 
-   	/*******************************************************
+   /*******************************************************
 	* finally
 	********************************************************/
 
    if (pass) {
       printf("\n **** All CouncilRoom tests completed successfully. **** \n\n");
-   }
-   else {
+   } else {
       printf("\n **** Atleast (1) CouncilRoom test failed. **** \n\n");
    }
-
 
    return 0;
 
