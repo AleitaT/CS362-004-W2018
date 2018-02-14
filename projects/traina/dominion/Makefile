@@ -32,8 +32,8 @@ runtests: testDrawCard
 randomtestadventurer: 
 	gcc -fprofile-arcs -ftest-coverage -Wall -std=c99 dominion.c randomtestadventurer.c rngs.c -o randomtestadventurer -lm -g
 
-randomtests: randomtestadventurer playdom
-	./randomtestadventurer & > randomtestadventurer.out
+randomtests: playdom randomtestadventurer 
+	./randomtestadventurer &> randomtestadventurer.out
 	gcov -abcfu dominion.c >> randomtestadventurer.out
 	cat dominion.c.gcov >> randomtestadventurer.out 
 
