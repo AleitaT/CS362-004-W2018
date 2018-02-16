@@ -82,7 +82,7 @@ int refactoredAmbassador(int handPos, int choice1, int choice2, int choice3, int
     return -1;
   }
 
-  if (choice1 = handPos) {
+  if (choice1 == handPos) {
     return -1;
   }
 
@@ -98,7 +98,7 @@ int refactoredAmbassador(int handPos, int choice1, int choice2, int choice3, int
   if (DEBUG)
     printf("Player %d reveals card number: %d\n", currentPlayer, state->hand[currentPlayer][choice1]);
 
-  //increase supply count for choosen card by amount being discarded
+  //increase supply count for chosen card by amount being discarded
   state->supplyCount[state->hand[currentPlayer][choice1]] += choice2;
 
   //each other player gains a copy of revealed card
@@ -1340,20 +1340,24 @@ void randomizeGameState(struct gameState* game) {           // Simulate mid game
     int randomNumberToAdd = -1;
     int randomNumber = 0;
 
+    game->coins = rand() % (20) + 1;
+    game->numActions = rand() % (5 - 1) + 1;
+    game->numBuys = rand() % (5 - 1) + 1;
+
     for (i = 0; i < game->numPlayers; ++i) {
 
         game->deckCount[i] = 0;
         game->handCount[i] = 0;
 
-        randomNumberToAdd = rand() % (20 + 1 - 1) + 1;
+        randomNumberToAdd = rand() % (20 - 1) + 1;
 
         for (j = 0; j < randomNumberToAdd; ++j) {       // Add random number of cards to player deck
 
-            randomNumber = rand() % (26 + 1 - 0);
+            randomNumber = rand() % (26) + 1;
 
             while (game->supplyCount[randomNumber] < 1) {
 
-                randomNumber = rand() % (26 + 1 - 0);
+                randomNumber = rand() % 26 + 1;
             }
             game->deckCount[i]++;
             game->deck[i][j] = randomNumber;
@@ -1361,15 +1365,15 @@ void randomizeGameState(struct gameState* game) {           // Simulate mid game
             game->supplyCount[randomNumber]--;
         }
 
-        randomNumberToAdd = rand() % (15 + 1 - 5) + 5;
+        randomNumberToAdd = rand() % (15 - 5) + 5;
 
         for (k = 0; k < randomNumberToAdd; ++k) {      // Add random number of cards to player hand
 
-            randomNumber = rand() % (26 + 1 - 0);
+            randomNumber = rand() % 26 + 1;
 
             while (game->supplyCount[randomNumber] < 1) {
 
-                randomNumber = rand() % (26 + 1 - 0);
+                randomNumber = rand() % 26 + 1;
             }
 
             game->handCount[i]++;
@@ -1378,15 +1382,15 @@ void randomizeGameState(struct gameState* game) {           // Simulate mid game
             game->supplyCount[randomNumber]--;
         }
 
-        randomNumberToAdd = rand() % (10 + 1 - 0);
+        randomNumberToAdd = rand() % 10 + 1;
 
         for (j = 0; j < randomNumberToAdd; ++j) {
 
-            randomNumber = rand() % (26 + 1 - 0);
+            randomNumber = rand() % 26 + 1;
 
             while (game->supplyCount[randomNumber] < 1) {
 
-                randomNumber = rand() % (26 + 1 - 0);
+                randomNumber = rand() % 26 + 1;
             }
 
             game->discardCount[i]++;
@@ -1406,10 +1410,10 @@ void randomNewGame(struct gameState* game){
     int seed = time(0);
 
     for (i = 1; i < 10 ; ++i) {
-        randomNumber = rand() % (26 + 1 - 0);
+        randomNumber = rand() % 26 + 1;
 
         while(containsCard(randomNumber, kingdom, 10)){
-            randomNumber = rand() % (26 + 1 - 0);
+            randomNumber = rand() % 26 + 1;
         }
 
         kingdom[i] = randomNumber;
@@ -1424,8 +1428,6 @@ void randomNewGame(struct gameState* game){
     }
 
 }
-
-int numOfTreasureHand(){}
 
 int cardPos(int player, int card, struct gameState* game){
 

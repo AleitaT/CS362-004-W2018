@@ -29,6 +29,27 @@ runtests: testDrawCard
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
+randomtestcard1: randomtestcard1.c dominion.o
+	echo -e "randomtestcard1.c\n" >> randomtestcard1.out
+	gcc -o randomtestcard1 -g randomtestcard1.c dominion.o rngs.o $(CFLAGS)
+	./randomtestcard1 >> randomtestcard1.out
+	echo "refactoredSteward function stats:" >> randomtestcard1.out
+	gcov -abcfu dominion.c | sed -n '/refactoredSteward/{n;p;n;p;n;p;n;p}' >> randomtestcard1.out
+
+randomtestcard2: randomtestcard2.c dominion.o
+   	echo -e "randomtestcard2.c\n" >> randomtestcard2.out
+    gcc -o randomtestcard2 -g randomtestcard2.c dominion.o rngs.o $(CFLAGS)
+	./randomtestcard2 >> randomtestcard2.out
+	echo "refactoredAmbassador function stats:" >> randomtestcard2.out
+	gcov -abcfu dominion.c | sed -n '/refactoredAmbassador/{n;p;n;p;n;p;n;p}' >> randomtestcard2.out
+	
+randomtestadventurer: randomtestadventurer.c dominion.o
+	echo -e "randomtestadventurer.c\n" >> randomtestadventurer.out
+	gcc -o randomtestadventurer -g randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
+	./randomtestadventurer >> randomtestadventurer.out
+	echo "refactoredAdventurer function stats:" >> randomtestadventurer.out
+	gcov -abcfu dominion.c | sed -n '/refactoredAdventurer/{n;p;n;p;n;p;n;p}' >> randomtestadventurer.out
+	
 test: unittest1.c dominion.o
 	echo -e "Results for running tests:\n" >> unittestresults.out
 	echo -e "unittest1.c:\n" >> unittestresults.out
@@ -87,4 +108,4 @@ player: player.c interface.o
 all: playdom player testDrawCard testBuyCard badTestDrawCard
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
+	rm -f *.o playdom.exe playdom player player.exe randomtestcard1 randomtestcard2 randomtestAdventurer unittest1 unittest2 unittest3 unittest4 cardtest1 cardtest2 cardtest3 cardtest4  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
