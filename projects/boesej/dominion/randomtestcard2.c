@@ -12,7 +12,7 @@
 #include "dominion.h"
 #include "dominion_helpers.h"
 
-#define MAX_TESTS 10000
+#define MAX_TESTS 30000
 
 int enoughToDiscard(int choice1, struct gameState* state, int currentPlayer, int handPos){
 

@@ -12,7 +12,7 @@
 #include "dominion.h"
 #include "dominion_helpers.h"
 
-#define MAX_TESTS 1000
+#define MAX_TESTS 30000
 
 
 int main(){

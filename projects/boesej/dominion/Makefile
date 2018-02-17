@@ -37,8 +37,8 @@ randomtestcard1: randomtestcard1.c dominion.o
 	gcov -abcfu dominion.c | sed -n '/refactoredSteward/{n;p;n;p;n;p;n;p}' >> randomtestcard1.out
 
 randomtestcard2: randomtestcard2.c dominion.o
-   	echo -e "randomtestcard2.c\n" >> randomtestcard2.out
-    gcc -o randomtestcard2 -g randomtestcard2.c dominion.o rngs.o $(CFLAGS)
+	echo -e "randomtestcard2.c\n" >> randomtestcard2.out
+	gcc -o randomtestcard2 -g randomtestcard2.c dominion.o rngs.o $(CFLAGS)
 	./randomtestcard2 >> randomtestcard2.out
 	echo "refactoredAmbassador function stats:" >> randomtestcard2.out
 	gcov -abcfu dominion.c | sed -n '/refactoredAmbassador/{n;p;n;p;n;p;n;p}' >> randomtestcard2.out
