@@ -32,10 +32,26 @@ runtests: testDrawCard
 randomtestadventurer: 
 	gcc -fprofile-arcs -ftest-coverage -Wall -std=c99 dominion.c randomtestadventurer.c rngs.c -o randomtestadventurer -lm -g
 
-randomtests: playdom randomtestadventurer 
+randomtestcard1: 
+	gcc -fprofile-arcs -ftest-coverage -Wall -std=c99 dominion.c randomtestcard1.c rngs.c -o randomtestcard1 -lm -g
+
+randomtestcard2: 
+	gcc -fprofile-arcs -ftest-coverage -Wall -std=c99 dominion.c randomtestcard2.c rngs.c -o randomtestcard2 -lm -g
+
+runrandomtestcardadventurer: playdom randomtestadventurer 
 	./randomtestadventurer &> randomtestadventurer.out
 	gcov -abcfu dominion.c >> randomtestadventurer.out
 	cat dominion.c.gcov >> randomtestadventurer.out 
+
+runrandomtestcard1: playdom randomtestcard1
+	./randomtestcard1 &> randomtestcard1.out
+	gcov -abcfu dominion.c >> randomtestcard1.out
+	cat dominion.c.gcov >> randomtestcard1.out 
+
+runrandomtestcard2: playdom randomtestcard2
+	./randomtestcard2 &> randomtestcard2.out
+	gcov -abcfu dominion.c >> randomtestcard2.out
+	cat dominion.c.gcov >> randomtestcard2.out 
 
 unit1:
 	gcc -fprofile-arcs -ftest-coverage -Wall -std=c99 dominion.c unittest1.c rngs.c -o unittest1 -lm -g
