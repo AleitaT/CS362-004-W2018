@@ -22,38 +22,39 @@ int isTreasure(int c);
 int isEqual(int l, int r);
 
 int main () {
-    printf("***** randomtestadventurer.c *****\n");
+    printf(" ----------- testing randomtestadventurer.c ------------\n");
+    printf(" ---------------- testing adventurer card ---------------\n");
     int treasure[] = {silver, copper, gold};
     int treasure_count;
     int i, j, player;
-    struct gameState game;
+    struct gameState g;
     int min = 3;
     //seed for random
     srand(time(NULL));
-    int cycles = 400; // having memory issues over 450 slows down which is conveniently where it starts getting a high fail rate
+    int cycles = 100000; // having memory issues over 450 slows down which is conveniently where it starts getting a high fail rate
 
 
     for (i = 0; i < cycles; i++) {
       for (j = 0; j < sizeof(struct gameState); j++) {
-      	// randomly initialize game state for each iteration
-        ((char*)&game)[j] = floor(Random() * 256);
+        // randomly initialize game state for each iteration
+        ((char*)&g)[j] = floor(Random() * 256);
       }
       // select a random player from max player and set up cards
-      player = floor(Random() * MAX_PLAYERS);
-      game.deckCount[player] = floor(Random() * ((MAX_DECK - min) + 1) + min);
-      treasure_count = floor(Random() * ((game.deckCount[player] - min) + 1) + min);
+      player = floor(Random() * MAX_PLAYERS);;
+      g.deckCount[player] = floor(Random() * ((MAX_DECK - min) + 1) + min);;
+      treasure_count = floor(Random() * ((g.deckCount[player] - min) + 1) + min);;
 
       // lets make sure there are at least three treasure cards available in deck 
-      for (i = 0; i < treasure_count; i++) {
-        game.deck[player][i] = treasure[rand() % 3];
+      for (j = 0; j < treasure_count; j++) {
+        g.deck[player][j] = treasure[rand() % 3];
       }
-      game.handCount[player] = floor(Random() * ((MAX_HAND - min) + 1) + min);
-      game.whoseTurn = player;
-      game.discardCount[player] = 0;
+      g.handCount[player] = floor(Random() * ((MAX_HAND - min) + 1) + min);
+      g.whoseTurn = player;
+      g.discardCount[player] = 0;
 
       // test adventure card function to go here... 
       // take game struct and player
-      testAdventurerCard(player, &game);
+      testAdventurerCard(player, &g);
     }
     // get an error total from everything collected/compared for clearer reporting
     // should we break this out for better error reporting? 
@@ -68,18 +69,24 @@ int main () {
 
     else {
         printf("\nFailure: tests failed for atleast (1) test in randomtestadventurer.c *****\n");
-        printf("--->cardEffect() failed: %d\n", error_card_effect);
-        printf("---->Treasure Count mismatch: %d\n", error_treasure_count);
-        printf("----->shuffle() failed: %d\n", error_shuffle);
-        printf("------>drawCard() failed: %d\n", error_draw_card);
-        printf("------->Hand/Deck Count mismatch: %d\n", error_deck_hand_count);
+        printf ("-------------------------------------------------\n");       
+        printf("Error: cardEffect() failed: %d\n", error_card_effect);
+        printf ("-------------------------------------------------\n");       
+        printf("Error: Treasure Count mismatch: %d\n", error_treasure_count);
+        printf ("-------------------------------------------------\n");       
+        printf("Error: shuffle() failed: %d\n", error_shuffle);
+        printf ("-------------------------------------------------\n");       
+        printf("Error: drawCard() failed: %d\n", error_draw_card);
+        printf ("-------------------------------------------------\n");       
+        printf("Error: Hand/Deck Count mismatch: %d\n", error_deck_hand_count);
+        printf ("-------------------------------------------------\n");       
     }
     return 0;
 }
 
 void testAdventurerCard(int p, struct gameState *b) {
 
-		// define 'state' varaibles for game structs 
+    // define 'state' varaibles for game structs 
     int temphand[MAX_HAND];
     int card;
     int bonus = 0;
@@ -108,28 +115,28 @@ void testAdventurerCard(int p, struct gameState *b) {
 
     // we should mmic the effects of fhe adventurer card and see if 
     // that is what our adventurer actionc play has as well. 
-		while(drawntreasure < 2) {
-	    if (a.deckCount[p] < 1) {
-	    	// shuffle check 
-	      test_shuffle = shuffle(p, &a);
-	      if (test_shuffle == -1 && a.deckCount[p] >= 1) {
-	        error_shuffle++;
-	      }
-	    }
-	    // draw card check 
-	    test_draw = drawCard(p, &a);
-	    if (test_draw == -1 && a.deckCount[p] != 0) {
-	        error_draw_card++;
-	    }
-	    // ccheck out top card p--- is treasure? 
-	    cardDrawn = a.hand[p][a.handCount[p] - 1];
-	    if (isTreasure(cardDrawn)) {
+    while(drawntreasure < 2) {
+      if (a.deckCount[p] < 1) {
+        // shuffle check 
+        test_shuffle = shuffle(p, &a);
+        if (test_shuffle == -1 && a.deckCount[p] >= 1) {
+          error_shuffle++;
+        }
+      }
+      // draw card check 
+      test_draw = drawCard(p, &a);
+      if (test_draw == -1 && a.deckCount[p] != 0) {
+          error_draw_card++;
+      }
+      // ccheck out top card p--- is treasure? 
+      cardDrawn = a.hand[p][a.handCount[p] - 1];
+      if (isTreasure(cardDrawn)) {
         drawntreasure++;
-	    } else {
-	      temphand[z] = cardDrawn;
-	      a.handCount[p]--; 
-	      z++;
-	    }
+      } else {
+        temphand[z] = cardDrawn;
+        a.handCount[p]--; 
+        z++;
+      }
     }
     while(z - 1 >= 0) {
       a.discard[p][a.discardCount[p]++] = temphand[z - 1]; 
@@ -173,17 +180,17 @@ void testAdventurerCard(int p, struct gameState *b) {
 
 // helper functions -- maybe we can do more with these later. 
 int isTreasure(int card) {
-	if(card == copper || card == gold || card == silver) {
-		return 1;
-	} else {
-		return 0;
-	}
+  if(card == copper || card == gold || card == silver) {
+    return 1;
+  } else {
+    return 0;
+  }
 }
 
 int isEqual(int left, int right) {
-	if(left!=right) {
-		return 0;
-	} else {
-		return 1;
-	}
+  if(left!=right) {
+    return 0;
+  } else {
+    return 1;
+  }
 }

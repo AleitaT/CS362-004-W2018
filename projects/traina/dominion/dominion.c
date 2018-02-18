@@ -673,7 +673,7 @@ int playAdventurer(struct gameState *state, int currentPlayer, int temphand[]){
 int playSmithy(struct gameState *state, int currentPlayer, int handPos){
   int i;
   //+3 Cards NOTE: changed 3 to 2
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < 2; i++) {
     drawCard(currentPlayer, state);
   }
   //discard card from hand
@@ -1133,7 +1133,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 		
     case sea_hag:
       playSeaHag(state, currentPlayer);
-      break;
+      return 0;
 
     case treasure_map:
       //search hand for another treasure_map

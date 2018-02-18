@@ -34,7 +34,7 @@ int main () {
 
     srand(time(NULL));
 
-    int cycles = 10000;
+    int cycles = 50000;
 
     /* randomly initialize game state like we did in adventurer random test*/
     for (i = 0; i < cycles; i++) {
@@ -181,7 +181,7 @@ void test_council_room(int p, struct gameState *b) {
 
 int isEqual(int left, int right) {
     if(left!=right) {
-      printf("Error: value %d is not equal to %d", left, right);
+    //  printf("Error: value %d is not equal to %d", left, right);
         return 0;
     } else {
         return 1;
