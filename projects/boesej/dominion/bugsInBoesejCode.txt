@@ -1,0 +1,104 @@
+Bug report Jon Boese dominion code 
+
+Title: bugsFoundInBoeseJCode
+
+Class: Serious Bug(s) 
+
+Date: March 1, 2018   
+Reported By:  Alieta Train   
+Email: traina@oregonstate.edu
+
+Product:  dominion                      Version:
+Platform: mac ios                       Version:
+Browser:                                Version:
+URL:        
+
+Is it reproducible: Yes / Occasionally / One Time / No
+
+Description
+===========
+
+adventurer function
+
+Adventurer card function does not return the appropriate results, and creates a bad game state. 
+
+The error lies in line 705 of dominion.c code where you can see that a bad comparative operator is being used.  
+
+The code should discard all cards in hand but instead it leaves one remaining in the hand (< vs <=) leaving one 
+card to always remain in the hand.  The game continues on but bad results ensue. Hand discards until 1 rather than 0.
+
+  This appears to be due to a bad comparative operator on line 705 of dominion.c
+  The code is supposed to:  discard all cards in play that have been drawn according to the notes in the code. However the function discards until greater than zero, indicating one card always remind in the hand, creating a bad deck/hand state. 
+
+Steps to Produce/Reproduce
+--------------------------
+  Reproducing:  This error can be reproduced by running the `make runrandomtestcardadventurer command from within the dominion codebase.
+  
+  Directions to create a test to reproduce.  Greate two game states.  Run adventurer card against one game and manually 
+  adjust for what adventurer card should have done, the results will not be the same even with identical states. 
+
+Expected Results
+----------------
+hand count expected 6
+
+Actual Results
+--------------
+hand count had 7
+
+Workarounds
+-----------
+Change line 705 of dominion.c to discard all cards in hand.  Currently only discards until 1 card is in hand.
+
+Attachments
+-----------
+
+Other Information
+----------------
+How I found the bug.  I found the bug by running both unit tests on the function.  The implied results being incorrect they were further tested against random tests to see how frequently the resulting outcome was incorrect.  Adjustments were made to the code to confirm that the changes I suggested resolved the issue. 
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+
+
+Description
+===========
+smithy function 
+  
+  Smithy function appears to have a bad score/deck/hand count relation. This is a comparative operator error in which 
+  the player is supposed to draw three cards but instead draws 4.  The wrong code is on line 676 where <=3 should be <3. 
+
+  a. Error: player's hand and deck count didn't match 9963 times.
+  b.  This error appears to be due to another improper comparative operator, but within the smithy refactored code.  
+  c. Line 676 of dominion.c contains the following for `for (i = 0; i <= 3; i++)` meaning the player draws cards for three turns. However because there is an equal operator combined with the i ‘less than’ structure this means that the player will infact draw four cards where they are supposed to draw three every time. 
+  d.  This error can be reproduced by running the `make runrandomtestcard1` command from within the dominion codebase. 
+
+Steps to Produce/Reproduce
+--------------------------
+run  `make all unitTests`  from within the dominion code base.  Observe unitTest.out. 
+
+or create a random game state, duplicate the game state, run smithy card on the game state and then manually apply the 
+intended affects to the second game state.  Comparing their results afterwards will show diferent counts for score, 
+deck, and hand count. 
+
+Expected Results
+----------------
+score after smithy should be 1
+after smithy deck should be reduced by 3
+after smithy should have hand count of 5 
+
+Actual Results
+--------------
+score of 2
+deck reduced by 3
+hang count of 8 
+
+Workarounds
+-----------
+Change line 676 of dominion.c to be for(i=0; i<3; i++) to make sure the player draws the appropriate amount of cards after smithy.
+
+Attachments
+-----------
+
+Other Information
+------------------
+How I found the bug.  I found the bug by running both unit tests on the function.  The implied results being incorrect they were further tested against random tests to see how frequently the resulting outcome was incorrect.  Adjustments were made to the code to confirm that the changes I suggested resolved the issue. 
