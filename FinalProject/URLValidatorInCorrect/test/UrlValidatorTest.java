@@ -1,12 +1,9 @@
-
-
 import junit.framework.TestCase;
+import java.util.concurrent.ThreadLocalRandom;
 
 //You can use this as a skeleton for your 3 different test approach
 //It is an optional to use this file, you can generate your own test file(s) to test the target function!
 // Again, it is up to you to use this file or not!
-
-
 
 
 
@@ -221,9 +218,97 @@ public class UrlValidatorTest extends TestCase {
    public void testIsValid()
    {
 	   //You can use this function for programming based testing
-
-   }
+	   
+	   String[] validSchemes = {"http", "https"};
+	   
+	   boolean isValid = true; 
+	   UrlValidator urlValidator = new UrlValidator(validSchemes, UrlValidator.NO_FRAGMENTS);
+	   int randomNum;
+	  
+	   boolean testResult = true;
+	   
+	   String[] goodScheme = {"http://", "ftp://", "https://", "sftp://"};   
    
+	   String[] badScheme = {"ptth://", "//ht:", ":////", "http"};
+	   
+	   String[] goodUrl = {"www.facebook.com", "www.amazon.com", "www.google.com", "main.oregonstate.edu"};
+	   
+	   String[] badUrl = {"999.999.999.999", "com.ww", "bbb.amazon.com", "...//www/com"};
+	   
+	   String[] goodPath = {"/path","/2345","/path356/","/123?query&=this"};
+	   
+	   String[] badPath = {"pathProblem","/.../","/324//32","/pathOk?//notOk"};
 
+	   for(int i = 0; i < 100; i++) {
 
+		   StringBuilder URLTest = new StringBuilder();
+		   isValid = true;
+		   for(int j = 0; j < 3; j++) {
+			   randomNum = ThreadLocalRandom.current().nextInt(1, 3);
+			   if(j == 0){
+				   if(randomNum == 1) {
+					   randomNum = ThreadLocalRandom.current().nextInt(0, 4);
+					   URLTest.append(goodScheme[randomNum]);
+					   
+				   }else {
+					   randomNum = ThreadLocalRandom.current().nextInt(0, 4);
+
+					   URLTest.append(badScheme[randomNum]);
+					   isValid = false;
+				   }
+			   }
+			   
+			   if(j == 1) {
+				   if(randomNum == 1) {
+					   randomNum = ThreadLocalRandom.current().nextInt(0, 4);
+
+					   URLTest.append(goodUrl[randomNum]);
+					   
+				   }else {
+					   randomNum = ThreadLocalRandom.current().nextInt(0, 4);
+
+					   URLTest.append(badUrl[randomNum]);
+					   isValid = false;
+				   }
+			   }			 
+			   
+			   if(j == 2) {
+				   if(randomNum == 1) {
+					   randomNum = ThreadLocalRandom.current().nextInt(0, 4);
+
+					   URLTest.append(goodPath[randomNum]);
+					   
+				   }else {
+					   randomNum = ThreadLocalRandom.current().nextInt(0, 4);
+
+					   URLTest.append(badPath[randomNum]);
+					   isValid = false;
+				   }				   
+			   }
+		   } 
+		   
+		   String urlString = URLTest.toString();
+		   testResult = urlValidator.isValid(urlString);
+		   
+		   if(testResult == true) {
+			   if(isValid == false) {
+				   System.out.println("TEST FAILED! Expected: Fail, Result: Pass");
+				   System.out.printf("URL: %s\n\n", urlString);
+				   
+			   }
+			 
+		   } else {
+			   if(isValid == true) {
+				   System.out.println("TEST FAILED! Expected: Pass, Result: Fail");
+				   System.out.printf("URL: %s\n\n", urlString);
+			   }
+		   }
+		   
+		   if(testResult && isValid) {
+			   System.out.println("TEST PASSED!");
+			   System.out.printf("URL: %s\n\n", urlString);
+		   }
+		   
+	   } 			
+   }   
 }
