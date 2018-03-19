@@ -289,7 +289,7 @@ public class UrlValidatorTest extends TestCase {
 		   
 		   String urlString = URLTest.toString();
 		   testResult = urlValidator.isValid(urlString);
-		   
+		   System.out.printf("Test Case: %d\n", i);
 		   if(testResult == true) {
 			   if(isValid == false) {
 				   System.out.println("TEST FAILED! Expected: Fail, Result: Pass");
@@ -299,13 +299,20 @@ public class UrlValidatorTest extends TestCase {
 			 
 		   } else {
 			   if(isValid == true) {
+				   
 				   System.out.println("TEST FAILED! Expected: Pass, Result: Fail");
 				   System.out.printf("URL: %s\n\n", urlString);
 			   }
 		   }
 		   
 		   if(testResult && isValid) {
-			   System.out.println("TEST PASSED!");
+			   System.out.println("TEST PASSED! Good URL");
+			   System.out.printf("URL: %s\n\n", urlString);
+		   }
+		   
+		   if(!testResult && !isValid) {
+			   
+			   System.out.println("TEST PASSED! Bad URL");
 			   System.out.printf("URL: %s\n\n", urlString);
 		   }
 		   
