@@ -19,7 +19,31 @@ public class UrlValidatorTest extends TestCase {
    public void testManualTest()
    {
 //You can use this function to implement your manual testing	   
-	   
+	   	   UrlValidator urlVal = new UrlValidator(null, null, UrlValidator.ALLOW_ALL_SCHEMES);
+	   System.out.println(urlVal.isValid("http://10.0.0.225"));
+	   System.out.println(urlVal.isValid("https://10.0.0.225"));
+	   System.out.println(urlVal.isValid("ftp://10.0.0.225"));
+	   System.out.println(urlVal.isValid("file://10.0.0.225"));
+	   System.out.println(urlVal.isValid("http://10.0.0.225:32"));
+	   System.out.println(urlVal.isValid("http://10.0.0.225:322"));
+	   System.out.println(urlVal.isValid("http://10.0.0.225:3222"));
+	   System.out.println(urlVal.isValid("http://10.0.0.225:3222"));
+	   System.out.println(urlVal.isValid("https://google.com"));
+	   System.out.println(urlVal.isValid("htp://www.google.com"));
+	   System.out.println(urlVal.isValid("https://www.google.com"));
+	   System.out.println(urlVal.isValid("ftp://www.google.com:102"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x=1"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x\0"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x\n"));
+	   System.out.println(urlVal.isValid("http://www.google.com:65535"));
+	   System.out.println(urlVal.isValid("http://www.google.com:1024"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x=1"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x\0"));
+	   System.out.println(urlVal.isValid("http://www.google.com?x\n"));	   
+	   System.out.println(urlVal.isValid("http://10.0.0.225:3000"));
+
    }
    
   /* INPUT PARTITIONING
